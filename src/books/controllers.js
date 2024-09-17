@@ -1,15 +1,14 @@
-require("dotenv").config();
-const express = require("express");
+const addBook = async (req, res) => {
+    try {
+        // Perform the main operation (e.g., adding a book)
+        res.status(201).json({ message: "success" });
+    } catch (error) {
+        // If an error occurs, handle it
+        res.status(500).json({ message: error.message, error: error });
+    }
+};
 
-const app = express();
-
-app.use(express.json());
-
-// Corrected route for health check
-app.get("/health", (req, res) => {
-    res.status(200).json({ message: "API is healthy" });
-});
-
-app.listen(5001, () => {
-    console.log(`Server is listening on port 5001`);
-});
+// Export the addBook function
+module.exports = {
+    addBook,
+};
