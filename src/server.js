@@ -1,20 +1,28 @@
-require("dotenv").config();
-const express = require("express");
-
-const bookRouter = require("./books/routes")
+require('dotenv').config();
+const express = require('express');
+const bookRouter = require('./books/routes');
+const sequelize = require('./db/connection'); 
+const app = express();
 const port = process.env.PORT || 5001;
 
-const app = express();
-
 app.use(express.json());
+app.use(bookRouter); // استفاده مستقیم از bookRouter
 
-app.use(bookRouter);
-
-// Corrected route for health check
-app.get("/health", (req, res) => {
-    res.status(200).json({ message: "API is healthy" });
+// مسیر بررسی سلامت
+app.get('/health', (req, res) => {
+  res.status(200).json({ message: 'API is healthy' });
 });
 
-app.listen(5001, () => {
-    console.log(`Server is listening on port ${port}`);
+const syncTables = async () => {
+  try {
+    await sequelize.sync(); // سینک کردن مدل‌ها با دیتابیس
+    console.log('Database synchronized');
+  } catch (error) {
+    console.error('Unable to sync the database:', error);
+  }
+};
+
+app.listen(port, () => {
+  syncTables();
+  console.log(`Server is listening on port ${port}`);
 });
