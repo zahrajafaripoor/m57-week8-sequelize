@@ -8,7 +8,7 @@ const addBook = async (req, res) => {
             authorId: req.body.authorId,
             genre: req.body.genre,
         });
-        res.status(201).json({ message: "success" });
+        res.status(200).json({ message: "success" });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -48,9 +48,33 @@ const getAuthorByName = async (req, res) => {
     }
 };
 
+const paramsExample = async (req, res) => {
+    try {
+        console.log("req.params:", req.params.title);
+
+        res.status(200).json({ message: "success", params: req.params });
+    } catch (error) {
+        res.status(500).json({ message: error.message, error: error });
+    }
+};
+
+//get book by 
+const getBooksByGenre = async (req, res) => {
+    try {
+      const books = await Book.findAll({
+        where: { genreId: req.params.genreId } // Use genreId to find books
+      });
+      res.status(200).json({ message: "Success", books });
+    } catch (error) {
+      res.status(500).json({ message: error.message, error });
+    }
+  };
+
 module.exports = {
     addBook,
     getAllBooks,
     addAuthor,
-    getAuthorByName
+    getAuthorByName,
+    paramsExample: paramsExample, 
+    getBooksByGenre
 };
