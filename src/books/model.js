@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../db/connection');
 
-// Author model
+// مدل نویسنده
 const Author = sequelize.define('author', {
     id: {
         type: DataTypes.INTEGER,
@@ -18,15 +18,15 @@ const Author = sequelize.define('author', {
     }
 }, { timestamps: false });
 
-// Book model
+// مدل کتاب
 const Book = sequelize.define('book', {
     title: {
         type: DataTypes.STRING,
         unique: true,
         allowNull: false
     },
-    authorname: { // استفاده از نام نویسنده
-        type: DataTypes.STRING,
+    authorId: {
+        type: DataTypes.INTEGER,
         allowNull: false
     },
     publisher: {
@@ -46,6 +46,9 @@ const Book = sequelize.define('book', {
         defaultValue: true
     }
 }, { timestamps: false });
+
+Author.hasMany(Book, { foreignKey: 'authorId' });
+Book.belongsTo(Author, { foreignKey: 'authorId' });
 
 module.exports = {
     Book,

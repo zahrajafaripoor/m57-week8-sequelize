@@ -3,12 +3,14 @@ const router = express.Router();
 const bookController = require('./controllers');
 
 // Routes related to books
-router.post('/addbook', bookController.addBook); // Adds a new book at /books/addbook
-router.get('/allbooks', bookController.getAllBooks); // Retrieves all books
-router.get('/genre/:genreId', bookController.getBooksByGenre); // Retrieves books based on genre
+router.post('/addbook', bookController.addBook);
+router.get('/allbooks', bookController.getAllBooks);
+router.get('/genre/:genre', bookController.getBooksByGenre);
 
 // Routes related to authors
-router.post('/authors', bookController.addAuthor); // Adds a new author at /books/authors
-router.get('/authors/:name', bookController.getAuthorByName); // Retrieves an author by name along with associated books
+router.post('/authors', bookController.addAuthor);
+router.get('/authors/:name', bookController.getAuthorByName);
+router.get('/author/:authorName', bookController.getBooksByAuthorName);
+router.get('/authors', bookController.getAllAuthors);
 
 module.exports = router;
