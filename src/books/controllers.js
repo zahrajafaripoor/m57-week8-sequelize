@@ -5,10 +5,14 @@ const addBook = async (req, res) => {
     try {
         const book = await Book.create({
             title: req.body.title,
-            authorId: req.body.authorId,
+            // authorId: req.body.authorId, 
+            author: req.body.author, // استفاده مستقیم از نام نویسنده به عنوان فیلد
+            publisher: req.body.publisher,
+            price: req.body.price,
             genre: req.body.genre,
+            in_stock: req.body.in_stock,
         });
-        res.status(200).json({ message: "success" });
+        res.status(200).json({ message: "success", book });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -27,7 +31,10 @@ const getAllBooks = async (req, res) => {
 // Add a new author
 const addAuthor = async (req, res) => {
     try {
-        const author = await Author.create({ name: req.body.name });
+        const author = await Author.create({
+            first_name: req.body.first_name,
+            surname: req.body.surname
+        });
         res.status(201).json({ message: 'Author added successfully', author });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -37,44 +44,41 @@ const addAuthor = async (req, res) => {
 // Get author by name and associated books
 const getAuthorByName = async (req, res) => {
     try {
-        const author = await Author.findOne({
-            where: { name: req.params.name },
-            include: [{ model: Book, as: 'books' }]
-        });
+        const author = await Author.findOne({ where: { first_name: req.params.name } });
         if (!author) return res.status(404).json({ message: 'Author not found' });
-        res.status(200).json(author);
+
+        const books = await Book.findAll({ where: { author: author.first_name } }); // استفاده از نام نویسنده به جای authorId
+        res.status(200).json({ author, books });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
 
-const paramsExample = async (req, res) => {
+// Get books by genre
+const getBooksByGenre = async (req, res) => {
     try {
-        console.log("req.params:", req.params.title);
-
-        res.status(200).json({ message: "success", params: req.params });
+        const books = await Book.findAll({ where: { genre: req.params.genre } });
+        res.status(200).json({ message: "Success", books });
     } catch (error) {
-        res.status(500).json({ message: error.message, error: error });
+        res.status(500).json({ message: error.message });
     }
 };
 
-//get book by 
-const getBooksByGenre = async (req, res) => {
+// Example for params (برای آزمایش و تست پارامترها)
+const paramsExample = async (req, res) => {
     try {
-      const books = await Book.findAll({
-        where: { genreId: req.params.genreId } // Use genreId to find books
-      });
-      res.status(200).json({ message: "Success", books });
+        res.status(200).json({ message: "success", params: req.params });
     } catch (error) {
-      res.status(500).json({ message: error.message, error });
+        res.status(500).json({ message: error.message });
     }
-  };
+};
 
+// اکسپورت کردن توابع مورد نیاز
 module.exports = {
     addBook,
     getAllBooks,
     addAuthor,
     getAuthorByName,
-    paramsExample: paramsExample, 
+    paramsExample,
     getBooksByGenre
 };
