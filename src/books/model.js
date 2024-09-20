@@ -1,16 +1,24 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../db/connection');
 
-// Define the Author model
+// Author model
 const Author = sequelize.define('author', {
-    name: {
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    },
+    first_name: {
         type: DataTypes.STRING,
         unique: true,
         allowNull: false
+    },
+    surname: {
+        type: DataTypes.STRING
     }
 }, { timestamps: false });
 
-// Define the Book model
+// Book model
 const Book = sequelize.define('book', {
     title: {
         type: DataTypes.STRING,
@@ -18,21 +26,34 @@ const Book = sequelize.define('book', {
         allowNull: false
     },
     author: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING, // به جای استفاده از authorId از نام نویسنده استفاده می‌کنیم
         allowNull: false
+    },
+    publisher: {
+        type: DataTypes.STRING,
+        defaultValue: 'not known'
+    },
+    price: {
+        type: DataTypes.INTEGER
     },
     genre: {
         type: DataTypes.STRING,
-        defaultValue: "some genre"
+        defaultValue: 'not specified'
+    },
+    in_stock: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true
     }
+    // authorId: {
+    //     type: DataTypes.INTEGER,
+    //     references: {
+    //         model: Author,
+    //         key: 'id'
+    //     }
+    // }  // این قسمت را کامنت کردیم چون نیازی به استفاده از authorId نیست
 }, { timestamps: false });
 
-// Set up associations (if needed in future)
-// Currently, Book does not have a foreign key referencing Author
-// Book.belongsTo(Author, { foreignKey: 'authorId', as: 'author' });
-// Author.hasMany(Book, { foreignKey: 'authorId', as: 'books' });
-
-// Export both models
 module.exports = {
     Book,
     Author
