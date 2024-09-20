@@ -1,24 +1,37 @@
 const express = require('express');
-const bookRouter = require('./books/routes'); // مسیر درست به فایل routes
-const sequelize = require('./db/connection'); // وارد کردن sequelize
+const bookRouter = require('./books/routes'); // Correct path to routes file
+const sequelize = require('./db/connection'); // Importing Sequelize connection
+const { Author, Book } = require('./books/model'); // Importing models
 
 const app = express();
 const port = process.env.PORT || 5001;
 
-// بررسی اتصال به دیتابیس
+// Middleware for parsing JSON
+app.use(express.json());
+
+// Database connection and server initialization
 (async () => {
   try {
     await sequelize.authenticate();
     console.log('Connection has been established successfully.');
-    
-    // راه‌اندازی سرور فقط در صورت موفق بودن اتصال به دیتابیس
-    app.use(express.json());
-    app.use('/books', bookRouter); // اضافه کردن مسیر برای کتاب‌ها
 
+    // Setting up routes
+    app.use('/books', bookRouter);
+
+    // Defining associations
+    Author.hasMany(Book, { foreignKey: 'authorId' });
+    Book.belongsTo(Author, { foreignKey: 'authorId' });
+
+    // Syncing models
+    await Author.sync({ alter: true });
+    await Book.sync({ alter: true });
+
+    // Health check route
     app.get('/health', (req, res) => {
       res.status(200).json({ message: 'API is healthy' });
     });
 
+    // Starting the server
     app.listen(port, () => {
       console.log(`Server is listening on port ${port}`);
     });
