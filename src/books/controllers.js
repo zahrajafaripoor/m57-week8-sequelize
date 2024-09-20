@@ -112,6 +112,6 @@ module.exports = {
     addAuthor,
     getAuthorByName,
     getBooksByAuthorName,
-    getAuthorWithBooks, // Adding this line
+    getAuthorWithBooks, 
     getBooksByGenre
 };
