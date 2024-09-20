@@ -25,8 +25,8 @@ const Book = sequelize.define('book', {
         unique: true,
         allowNull: false
     },
-    author: {
-        type: DataTypes.STRING, // به جای استفاده از authorId از نام نویسنده استفاده می‌کنیم
+    authorname: { // استفاده از نام نویسنده
+        type: DataTypes.STRING,
         allowNull: false
     },
     publisher: {
@@ -45,13 +45,6 @@ const Book = sequelize.define('book', {
         allowNull: false,
         defaultValue: true
     }
-    // authorId: {
-    //     type: DataTypes.INTEGER,
-    //     references: {
-    //         model: Author,
-    //         key: 'id'
-    //     }
-    // }  // این قسمت را کامنت کردیم چون نیازی به استفاده از authorId نیست
 }, { timestamps: false });
 
 module.exports = {
