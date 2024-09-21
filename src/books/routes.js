@@ -12,5 +12,8 @@ router.post('/authors', bookController.addAuthor);
 router.get('/authors/:name', bookController.getAuthorByName);
 router.get('/author/:authorName', bookController.getBooksByAuthorName);
 router.get('/authors', bookController.getAllAuthors);
+router.put('/update/:id', bookController.updateBookAuthor);
+router.put('/update-author/:title', bookController.updateBookAuthor); // Updates a book's author
+
 
 module.exports = router;

@@ -24,6 +24,7 @@ const addBook = async (req, res) => {
 const getAllBooks = async (req, res) => {
     try {
         const books = await Book.findAll({ include: { model: Author, attributes: ['first_name', 'surname'] } });
+        console.log(books);
         res.status(200).json(books);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -104,6 +105,25 @@ const getBooksByGenre = async (req, res) => {
     }
 };
 
+// Update book's author
+
+const updateBookAuthor = async (req, res) => {
+    try {
+        const book = await Book.findOne({ where: { title: req.params.title } });
+        if (!book) return res.status(404).json({ message: 'Book not found' });
+
+        const author = await Author.findOne({ where: { id: req.body.authorId } });
+        if (!author) return res.status(404).json({ message: 'Author not found' });
+
+        book.authorId = author.id;
+        await book.save();
+
+        res.status(200).json({ message: 'Book author updated successfully', book });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 // Exporting the required functions
 module.exports = {
     addBook,
@@ -113,5 +133,6 @@ module.exports = {
     getAuthorByName,
     getBooksByAuthorName,
     getAuthorWithBooks, 
-    getBooksByGenre
+    getBooksByGenre,
+    updateBookAuthor
 };
